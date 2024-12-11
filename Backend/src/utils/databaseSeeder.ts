@@ -1,4 +1,3 @@
-
 // to run this script and seed database with data from CSV files run :  npx ts-node src/utils/databaseSeeder.ts
 
 import fs from 'fs';
@@ -7,13 +6,27 @@ import mongoose from 'mongoose';
 import csvParser from 'csv-parser';
 import Product from '../models/product';
 import Sale from '../models/sales';
+import User from '../models/user';
 
 // Paths to the CSV files inside the "data" folder
 const PRODUCTS_CSV = path.resolve(__dirname, '../../data/products.csv');
 const SALES_CSV = path.resolve(__dirname, '../../data/sales.csv');
+const USERS_CSV = path.resolve(__dirname, '../../data/ecommerce.users.csv');
 
 // Function to import CSV data into JSON format
 const importCSV = async (filePath: string) => {
+  return new Promise<any[]>((resolve, reject) => {
+    const results: any[] = [];
+    fs.createReadStream(filePath)
+      .pipe(csvParser())
+      .on('data', (data) => results.push(data))
+      .on('end', () => resolve(results))
+      .on('error', (error) => reject(error));
+  });
+};
+
+// Function to import users from CSV
+const importUsersCSV = async (filePath: string) => {
   return new Promise<any[]>((resolve, reject) => {
     const results: any[] = [];
     fs.createReadStream(filePath)
@@ -62,6 +75,18 @@ const seedDatabase = async () => {
       }))
     );
     console.log('Sales imported successfully!');
+
+    // Import and insert users
+    console.log('Importing users...');
+    const users = await importUsersCSV(USERS_CSV);
+    await User.insertMany(
+      users.map((user) => ({
+        _id: user._id,
+        username: user.username,
+        password: user.password,
+      }))
+    );
+    console.log('Users imported successfully!');
 
     process.exit(0);
   } catch (error) {
