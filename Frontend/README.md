@@ -41,7 +41,7 @@ A modern sales dashboard built with Vue 3, TypeScript, and Vite, featuring real-
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/mehdiAlouche/panier-analyser-app.git
    cd sales-dashboard
    ```
 

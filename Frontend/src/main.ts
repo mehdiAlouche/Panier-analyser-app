@@ -4,6 +4,7 @@ import router from './router';
 import './style.css';
 import App from './App.vue';
 import { VueSpinnersPlugin } from 'vue3-spinners';
+import './assets/tailwind.css';
 
 const pinia = createPinia();
 const app = createApp(App);
